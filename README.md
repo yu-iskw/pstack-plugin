@@ -112,6 +112,13 @@ This repository ships [pstack](https://github.com/cursor/plugins/tree/main/pstac
 
 Use the [sync-pstack-upstream](.claude/skills/sync-pstack-upstream/SKILL.md) skill (or `/sync-pstack-upstream` when loaded) for the full catch-up workflow.
 
+Workspace Claude Code verification (no global config changes):
+
+```bash
+./scripts/verify-pstack-claude-workspace.sh
+./scripts/verify-pstack-claude-workspace.sh --live   # requires claude login; haiku only
+```
+
 Manual smoke checklist: [plugins/pstack/docs/claude-smoke-checklist.md](plugins/pstack/docs/claude-smoke-checklist.md).
 
 ## Claude Marketplace

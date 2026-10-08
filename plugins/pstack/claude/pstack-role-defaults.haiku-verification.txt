@@ -1,0 +1,22 @@
+# pstack role defaults (Claude Code). Haiku-only profile for workspace verification.
+# profile: haiku-verification
+# budget: small (low)
+# Copy to ~/.claude/pstack-models.mdc only when you accept a user-level file for live tests.
+# Prefer: scripts/verify-pstack-claude-workspace.sh --live (uses a temp HOME + this file).
+feature, refactoring: haiku
+bug-fix: haiku
+perf-issue: haiku
+hillclimb: haiku
+judgment and prose: haiku
+hardest tasks: haiku
+how explorer: haiku
+how explainer: haiku
+why investigators: haiku
+why synthesizer: haiku
+reflect tooling: haiku
+reflect judgment, divergent, synthesizer: haiku
+arena runners: haiku, haiku
+arena cross-judge pool: haiku, haiku
+swarm workers: haiku
+architect runners: haiku, haiku
+interrogate reviewers: haiku, haiku
