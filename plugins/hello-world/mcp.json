@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "sample-sqlite": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sqlite",
+        "--db",
+        "${PLUGIN_DATA}/sample.db"
+      ],
+      "env": {
+        "DEBUG": "true"
+      },
+      "cwd": "${PLUGIN_ROOT}"
+    }
+  }
+}

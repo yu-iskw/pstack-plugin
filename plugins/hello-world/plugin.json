@@ -1,0 +1,13 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "hello-world",
+  "version": "1.0.0",
+  "description": "Comprehensive sample plugin demonstrating portable Agent Skills and MCP alongside Claude Code extensions.",
+  "author": {
+    "name": "yu-iskw"
+  },
+  "homepage": "https://github.com/yu-iskw/claude-code-plugin-template/tree/main/plugins/hello-world",
+  "repository": "https://github.com/yu-iskw/claude-code-plugin-template",
+  "license": "Apache-2.0",
+  "keywords": ["agent-plugin", "agent-skills", "mcp", "claude-code"]
+}
