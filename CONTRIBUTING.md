@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing to this template.
+Thanks for contributing to pstack-plugin.
 
 ## Development Prerequisites
 

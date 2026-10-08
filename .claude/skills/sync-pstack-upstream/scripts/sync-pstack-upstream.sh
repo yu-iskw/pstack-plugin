@@ -84,6 +84,10 @@ for rel in plugin.json UPSTREAM.json README.claude-header.md README.md docs/clau
 		cp "${PLUGIN_DIR}/${rel}" "${owned_stash}/${rel}"
 	fi
 done
+if [[ -d ${PLUGIN_DIR}/claude ]]; then
+	mkdir -p "${owned_stash}/claude"
+	cp -R "${PLUGIN_DIR}/claude/." "${owned_stash}/claude/"
+fi
 if [[ -d ${PLUGIN_DIR}/.claude-plugin ]]; then
 	cp -R "${PLUGIN_DIR}/.claude-plugin" "${owned_stash}/.claude-plugin"
 fi
@@ -97,6 +101,7 @@ rsync -a --delete \
 	--exclude 'README.claude-header.md' \
 	--exclude 'README.md' \
 	--exclude 'docs/claude-smoke-checklist.md' \
+	--exclude 'claude/' \
 	"${upstream_src}/" "${PLUGIN_DIR}/"
 
 for rel in plugin.json UPSTREAM.json README.claude-header.md README.md docs/claude-smoke-checklist.md; do
@@ -105,6 +110,10 @@ for rel in plugin.json UPSTREAM.json README.claude-header.md README.md docs/clau
 		cp "${owned_stash}/${rel}" "${PLUGIN_DIR}/${rel}"
 	fi
 done
+if [[ -d ${owned_stash}/claude ]]; then
+	mkdir -p "${PLUGIN_DIR}/claude"
+	cp -R "${owned_stash}/claude/." "${PLUGIN_DIR}/claude/"
+fi
 if [[ -d ${owned_stash}/.claude-plugin ]]; then
 	rm -rf "${PLUGIN_DIR}/.claude-plugin"
 	cp -R "${owned_stash}/.claude-plugin" "${PLUGIN_DIR}/.claude-plugin"
@@ -124,7 +133,7 @@ jq -n \
 	--arg version "${upstream_version}" \
 	--arg syncedAt "${synced_at}" \
 	'{repo: $repo, path: $path, ref: $ref, commit: $commit, version: $version, syncedAt: $syncedAt}' \
-	> "${PLUGIN_DIR}/UPSTREAM.json"
+	>"${PLUGIN_DIR}/UPSTREAM.json"
 
 if [[ ${SKIP_PATCHES} != true ]]; then
 	if [[ -d ${PATCH_DIR} ]]; then
@@ -150,7 +159,7 @@ if [[ -f ${PLUGIN_DIR}/README.claude-header.md ]]; then
 		cat "${PLUGIN_DIR}/README.claude-header.md"
 		echo ""
 		cat "${upstream_src}/README.md"
-	} > "${PLUGIN_DIR}/README.md"
+	} >"${PLUGIN_DIR}/README.md"
 elif [[ -f ${upstream_src}/README.md ]]; then
 	cp "${upstream_src}/README.md" "${PLUGIN_DIR}/README.md"
 fi

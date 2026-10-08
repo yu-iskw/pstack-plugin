@@ -1,0 +1,63 @@
+{
+  "pricingSource": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "pricingAsOf": "2026-10-08",
+  "notes": "USD per million tokens (base input / output). Update pricingAsOf and numbers when Anthropic changes the pricing page, then run scripts/render-role-defaults.sh.",
+  "models": [
+    {
+      "displayName": "Claude Opus 5.5",
+      "slug": "claude-opus-5-5",
+      "tier": "flagship",
+      "inputUsdPerMTok": 4,
+      "outputUsdPerMTok": 20,
+      "claudeCodeAliases": ["opus"]
+    },
+    {
+      "displayName": "Claude Sonnet 5.5",
+      "slug": "claude-sonnet-5-5",
+      "tier": "balanced",
+      "inputUsdPerMTok": 2,
+      "outputUsdPerMTok": 10,
+      "claudeCodeAliases": ["sonnet"]
+    },
+    {
+      "displayName": "Claude Haiku 4.5",
+      "slug": "claude-haiku-4-5",
+      "tier": "fast",
+      "inputUsdPerMTok": 1,
+      "outputUsdPerMTok": 5,
+      "claudeCodeAliases": ["haiku"]
+    }
+  ],
+  "roleDefaults": {
+    "feature, refactoring": "claude-sonnet-5-5",
+    "bug-fix": "claude-sonnet-5-5",
+    "perf-issue": "claude-sonnet-5-5",
+    "hillclimb": "claude-sonnet-5-5",
+    "judgment and prose": "claude-opus-5-5",
+    "hardest tasks": "claude-opus-5-5",
+    "how explorer": "claude-haiku-4-5",
+    "how explainer": "claude-opus-5-5",
+    "why investigators": "claude-haiku-4-5",
+    "why synthesizer": "claude-opus-5-5",
+    "reflect tooling": "claude-sonnet-5-5",
+    "reflect judgment, divergent, synthesizer": "claude-opus-5-5",
+    "arena runners": ["claude-sonnet-5-5", "claude-opus-5-5"],
+    "arena cross-judge pool": ["claude-opus-5-5", "claude-sonnet-5-5"],
+    "swarm workers": "claude-haiku-4-5",
+    "architect runners": ["claude-opus-5-5", "claude-sonnet-5-5"],
+    "interrogate reviewers": ["claude-opus-5-5", "claude-sonnet-5-5"]
+  },
+  "skillFallbacks": {
+    "codeDelegate": "claude-sonnet-5-5",
+    "judgment": "claude-opus-5-5",
+    "highVolumeWorker": "claude-haiku-4-5",
+    "arenaRunnerA": "claude-sonnet-5-5",
+    "arenaRunnerB": "claude-opus-5-5"
+  },
+  "budgetEffort": {
+    "unlimited": { "opus": "max", "sonnet": "high", "haiku": "high" },
+    "large": { "opus": "high", "sonnet": "high", "haiku": "medium" },
+    "medium": { "opus": "medium", "sonnet": "medium", "haiku": "low" },
+    "small": { "opus": "low", "sonnet": "low", "haiku": "low" }
+  }
+}

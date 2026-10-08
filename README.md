@@ -1,6 +1,6 @@
-# Agent Plugin Monorepo Template
+# pstack-plugin
 
-Template repository for building portable [Agent Plugins](https://agent-plugins.org/) with first-class Claude Code compatibility, shared CI/CD, and integration testing.
+Repository for the Claude Code distribution of [pstack](https://github.com/cursor/plugins/tree/main/pstack): portable [Agent Plugins](https://agent-plugins.org/) packaging, shared CI/CD, and integration testing.
 
 ## Key Features
 
@@ -19,16 +19,12 @@ The portable Agent Plugin package is canonical. Client-specific capabilities liv
 ├── .claude-plugin/
 │   └── marketplace.json              # Claude Code distribution catalog
 ├── plugins/
-│   └── hello-world/
+│   └── pstack/
 │       ├── plugin.json               # Agent Plugins v1 manifest
-│       ├── skills/                   # Portable Agent Skills
-│       ├── mcp.json                  # Portable MCP configuration
+│       ├── skills/                   # Portable Agent Skills (vendored + patches)
 │       ├── .claude-plugin/           # Claude Code adapter manifest
-│       ├── .mcp.json                 # Claude-native MCP compatibility
-│       ├── agents/                   # Claude-specific agents
-│       ├── commands/                 # Claude-specific commands
-│       ├── hooks/                    # Claude-specific hooks
-│       └── .lsp.json                 # Client-specific LSP configuration
+│       ├── claude/                   # Claude-only owned defaults (not synced from upstream)
+│       └── agents/                   # Subagent definitions
 ├── integration_tests/
 └── .github/workflows/
 ```
@@ -37,9 +33,9 @@ Agent Plugins v1 intentionally standardizes only Agent Skills and MCP servers. D
 
 ## Quickstart
 
-1. Create a repository from this template.
-2. Copy or rename `plugins/hello-world`.
-3. Update both the root portable manifest and the optional Claude marketplace entry.
+1. Clone this repository.
+2. Install `pstack` from `.claude-plugin/marketplace.json`.
+3. Run `/setup-pstack` after install (see [pstack plugin](#pstack-plugin-claude-code) below).
 4. Run:
 
 ```bash
@@ -140,7 +136,7 @@ The suite validates:
 
 ## Specification Version
 
-This template targets Agent Plugins **1.0.0 (Working Draft)**. Canonical schema identifiers are pinned in each portable manifest and MCP configuration. Because clients must select locally supported schemas rather than fetch them while loading a plugin, production client implementations should vendor recognized schemas.
+This repository targets Agent Plugins **1.0.0 (Working Draft)**. Canonical schema identifiers are pinned in each portable manifest and MCP configuration. Because clients must select locally supported schemas rather than fetch them while loading a plugin, production client implementations should vendor recognized schemas.
 
 ## License
 

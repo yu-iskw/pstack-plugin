@@ -1,7 +1,7 @@
 {
-  "name": "claude-plugin-template",
+  "name": "pstack-plugin",
   "metadata": {
-    "description": "Template repository for creating high-quality Claude Code plugins with shared CI/CD and testing infrastructure"
+    "description": "Claude Code distribution of pstack with shared CI/CD and integration testing"
   },
   "owner": {
     "name": "yu-iskw"
@@ -17,17 +17,6 @@
       },
       "license": "MIT",
       "repository": "https://github.com/yu-iskw/pstack-plugin"
-    },
-    {
-      "name": "hello-world",
-      "description": "Comprehensive sample plugin demonstrating all Claude Code extension points",
-      "source": "./plugins/hello-world",
-      "version": "1.0.0",
-      "author": {
-        "name": "yu-iskw"
-      },
-      "license": "Apache-2.0",
-      "repository": "https://github.com/yu-iskw/claude-code-plugin-template"
     }
   ]
 }
