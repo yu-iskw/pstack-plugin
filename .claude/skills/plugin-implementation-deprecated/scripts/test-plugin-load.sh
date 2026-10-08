@@ -63,7 +63,7 @@ if claude plugin install --help >/dev/null 2>&1; then
 	fi
 fi
 
-if ! claude --plugin-dir "${plugin_dir}" plugin list >"${tmp_dir}/plugin-dir-list.txt" 2>&1; then
+if ! claude --plugin-dir="${plugin_dir}" plugin list >"${tmp_dir}/plugin-dir-list.txt" 2>&1; then
 	echo "ERROR: 'claude --plugin-dir ${plugin_dir} plugin list' exited non-zero." >&2
 	cat "${tmp_dir}/plugin-dir-list.txt" >&2
 	exit 1

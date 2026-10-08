@@ -1,0 +1,22 @@
+# pstack role defaults (Claude Code). Generated from tune-pstack-models.
+# pricingAsOf: 2026-10-08 — https://platform.claude.com/docs/en/about-claude/pricing
+# profile: cost-efficient
+# budget: medium (medium)
+# Role lines use Claude Code aliases opus, sonnet, haiku (https://code.claude.com/docs/en/model-config).
+feature, refactoring: haiku
+bug-fix: sonnet
+perf-issue: sonnet
+hillclimb: sonnet
+judgment and prose: sonnet
+hardest tasks: sonnet
+how explorer: haiku
+how explainer: sonnet
+why investigators: haiku
+why synthesizer: sonnet
+reflect tooling: haiku
+reflect judgment, divergent, synthesizer: sonnet
+arena runners: sonnet, haiku
+arena cross-judge pool: sonnet, haiku
+swarm workers: haiku
+architect runners: sonnet, haiku
+interrogate reviewers: sonnet, haiku

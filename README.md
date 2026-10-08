@@ -1,147 +1,108 @@
-# Agent Plugin Monorepo Template
+# pstack for Claude Code
 
-Template repository for building portable [Agent Plugins](https://agent-plugins.org/) with first-class Claude Code compatibility, shared CI/CD, and integration testing.
+[pstack](https://github.com/cursor/plugins/tree/main/pstack) is a plugin of rigorous agent workflows—playbooks, multi-model panels, and subagents—for serious engineering work in the IDE. This repository is the **Claude Code** distribution: same skills and agents as upstream, adapted for the `claude` CLI and Agent tool.
 
-## Key Features
+**Using Cursor?** Install pstack from the [Cursor marketplace](https://github.com/cursor/plugins/tree/main/pstack) (`/add-plugin pstack`). This README is for **Claude Code** only.
 
-- **Portable Core**: Each plugin has a root `plugin.json`, `skills/`, and optional `mcp.json` following Agent Plugins v1.0.0.
-- **Claude Code Adapter**: Existing `.claude-plugin`, agents, commands, hooks, MCP compatibility, LSP, and marketplace support remain available.
-- **Monorepo Ready**: Host multiple plugins under `plugins/`.
-- **Conformance Checks**: Validate manifest fields, MCP transports, path rules, reserved variables, and component discovery.
-- **Real Claude Installation Tests**: Docker CI adds the repository marketplace, installs each Claude-compatible plugin, and verifies the installation.
+## Prerequisites
 
-## Architecture
+- [Claude Code](https://code.claude.com/docs) installed (`claude` on your PATH)
+- Signed in: `claude auth status` should show `loggedIn: true`
 
-The portable Agent Plugin package is canonical. Client-specific capabilities live in optional adapters and do not modify the portable contract.
+## Install with the `claude` CLI
 
-```text
-.
-├── .claude-plugin/
-│   └── marketplace.json              # Claude Code distribution catalog
-├── plugins/
-│   └── hello-world/
-│       ├── plugin.json               # Agent Plugins v1 manifest
-│       ├── skills/                   # Portable Agent Skills
-│       ├── mcp.json                  # Portable MCP configuration
-│       ├── .claude-plugin/           # Claude Code adapter manifest
-│       ├── .mcp.json                 # Claude-native MCP compatibility
-│       ├── agents/                   # Claude-specific agents
-│       ├── commands/                 # Claude-specific commands
-│       ├── hooks/                    # Claude-specific hooks
-│       └── .lsp.json                 # Client-specific LSP configuration
-├── integration_tests/
-└── .github/workflows/
-```
+### 1. Add this repository as a marketplace
 
-Agent Plugins v1 intentionally standardizes only Agent Skills and MCP servers. Distribution, installation, permissions, updates, user experience, agents, commands, hooks, and LSP behavior remain client-specific.
-
-## Quickstart
-
-1. Create a repository from this template.
-2. Copy or rename `plugins/hello-world`.
-3. Update both the root portable manifest and the optional Claude marketplace entry.
-4. Run:
+Register [yu-iskw/pstack-plugin](https://github.com/yu-iskw/pstack-plugin) from GitHub (no clone required):
 
 ```bash
-make lint
-./integration_tests/run.sh --skip-loading
-make test-integration-docker
+claude plugin marketplace add https://github.com/yu-iskw/pstack-plugin
 ```
 
-## Adding a Plugin
+Shorthand also works: `claude plugin marketplace add yu-iskw/pstack-plugin`.
 
-Create `plugins/<name>/plugin.json`:
+**Contributors** working in a git clone can use a directory marketplace instead: `claude plugin marketplace add "$(pwd)"` from the repo root (use an absolute path; a bare `.` often fails).
 
-```json
-{
-  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "my-plugin",
-  "version": "0.1.0",
-  "description": "A portable Agent Plugin"
-}
-```
+### 2. Install the `pstack` plugin
 
-Optional portable components:
+Pick a scope:
 
-- `plugins/<name>/skills/<skill>/SKILL.md`
-- `plugins/<name>/mcp.json`
+| Scope                    | Command                                               | Use when                                   |
+| ------------------------ | ----------------------------------------------------- | ------------------------------------------ |
+| **User** (all projects)  | `claude plugin install -s user pstack@pstack-plugin`  | You want pstack everywhere                 |
+| **Local** (this machine) | `claude plugin install -s local pstack@pstack-plugin` | Project-local install from the marketplace |
 
-Optional client adapters:
-
-- `plugins/<name>/.claude-plugin/plugin.json`
-- `plugins/<name>/.cursor-plugin/plugin.json`
-- `plugins/<name>/.codex-plugin/plugin.json`
-
-The integration runner discovers plugins from `plugins/*/plugin.json`. A missing optional component is not an error.
-
-## Portable MCP Rules
-
-`mcp.json` must use the Agent Plugins MCP schema and declare each transport explicitly:
-
-```json
-{
-  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
-  "mcpServers": {
-    "example": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["example-server", "--data", "${PLUGIN_DATA}/state"],
-      "cwd": "${PLUGIN_ROOT}"
-    }
-  }
-}
-```
-
-Important constraints:
-
-- Plugin-relative executable paths begin with `./` and stay inside the plugin root.
-- `command` is one executable token and does not receive placeholder expansion.
-- `${PLUGIN_ROOT}` and `${PLUGIN_DATA}` are expanded only in `args`, `env` values, and `cwd`.
-- Plugins may not override `PLUGIN_ROOT` or `PLUGIN_DATA` in `env`.
-- Non-loopback remote MCP URLs must use HTTPS.
-- Secrets must not be embedded in MCP headers or environment configuration.
-
-## pstack plugin (Claude Code)
-
-This repository ships [pstack](https://github.com/cursor/plugins/tree/main/pstack) under `plugins/pstack` for Claude Code. Content is vendored from `cursor/plugins` on `main`, with Claude-specific overlay patches in `patches/pstack/`. Upstream revision is recorded in `plugins/pstack/UPSTREAM.json`.
-
-**Install:** add this repo as a Claude Code marketplace (`.claude-plugin/marketplace.json`), install `pstack`, then run `/setup-pstack` and use `/poteto-mode` for rigorous work. For Cursor, use the official `pstack` plugin from the Cursor marketplace instead.
-
-**Catch up with upstream:**
+Enable if it is not already on:
 
 ```bash
-./.claude/skills/sync-pstack-upstream/scripts/sync-pstack-upstream.sh
-./integration_tests/run.sh --manifest-only
+claude plugin enable pstack@pstack-plugin
 ```
 
-Use the [sync-pstack-upstream](.claude/skills/sync-pstack-upstream/SKILL.md) skill (or `/sync-pstack-upstream` when loaded) for the full catch-up workflow. See [patches/pstack/README.md](patches/pstack/README.md) before editing synced files.
+### 3. Confirm install
 
-Manual smoke checklist: [plugins/pstack/docs/claude-smoke-checklist.md](plugins/pstack/docs/claude-smoke-checklist.md).
-
-## Claude Marketplace
-
-Agent Plugins does not define a universal marketplace protocol. `.claude-plugin/marketplace.json` remains the Claude Code distribution catalog, while each plugin's root files form the portable package consumed by compatible clients.
-
-## Testing
+After `plugin install`, you do **not** use `--plugin-dir`. Check the installed plugin:
 
 ```bash
-./integration_tests/run.sh
-./integration_tests/run.sh --skip-loading
-./integration_tests/run.sh --manifest-only
+claude plugin list
 ```
 
-The suite validates:
+You should see `pstack@pstack-plugin`. From a project where the plugin is enabled:
 
-- Agent Plugins root manifests
-- Portable MCP configuration
-- Skills and component discovery
-- Optional Claude, Cursor, and Codex adapters
-- Claude Code loading when the CLI is available
+```bash
+claude agents
+```
 
-## Specification Version
+Expect plugin agents such as `pstack:poteto-agent` and `pstack:Comment Sicko`.
 
-This template targets Agent Plugins **1.0.0 (Working Draft)**. Canonical schema identifiers are pinned in each portable manifest and MCP configuration. Because clients must select locally supported schemas rather than fetch them while loading a plugin, production client implementations should vendor recognized schemas.
+### Ephemeral load (repo clone only — not the normal install path)
+
+If you are **inside a git clone** of [yu-iskw/pstack-plugin](https://github.com/yu-iskw/pstack-plugin) and want to try the plugin **without** `plugin install` (maintainers, CI, quick smoke):
+
+```bash
+cd /path/to/pstack-plugin   # repo root; plugins/pstack exists only in this tree
+claude --plugin-dir=plugins/pstack plugin list
+```
+
+Use **`--plugin-dir=`** with equals; a space before `plugin` breaks the command. End users who installed via marketplace in step 2 should use `claude plugin list` instead.
+
+## Get started after install
+
+1. **Configure models (recommended once)** — In Claude Code, run `/pstack:setup-pstack` (or `/setup-pstack` if your CLI shows the short name). It writes `~/.claude/pstack-models.mdc` with per-role model choices and a reasoning budget. See [setup-pstack](plugins/pstack/skills/setup-pstack/SKILL.md).
+
+2. **Rigorous work** — Use `/pstack:poteto-mode` (or `/poteto-mode`) at the start of a task. See [poteto-mode](plugins/pstack/skills/poteto-mode/SKILL.md).
+
+3. **Not sure which skill to use?** — `/pstack:poteto-help` with your question. See [poteto-help](plugins/pstack/skills/poteto-help/SKILL.md).
+
+4. **Deeper walkthrough** — [pstack guide](plugins/pstack/docs/guide/README.md) in `plugins/pstack/docs/guide/`.
+
+Start a session from your project (with project settings if you use a local-scope install):
+
+```bash
+claude --setting-sources project,local,user
+```
+
+## What you get
+
+- **Skills** — `/poteto-mode`, `/poteto-help`, `/setup-pstack`, `how`, `why`, `arena`, `swarm`, `reflect`, `interrogate`, `architect`, and more under `plugins/pstack/skills/`.
+- **Subagents** — e.g. `pstack:poteto-agent`, `pstack:Comment Sicko` (spawn via the Agent tool in Claude Code).
+
+Full skill list and philosophy: [plugins/pstack/README.md](plugins/pstack/README.md) (content below the Claude install header is shared with upstream).
+
+## Troubleshooting
+
+| Problem                                 | What to try                                                                                                                                             |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `make verify-pstack-claude` not found   | Run maintainer verification from a **clone of this repo** (`pstack-plugin`), not from [cursor/plugins](https://github.com/cursor/plugins).              |
+| `plugin not found` on install           | Run `claude plugin marketplace add https://github.com/yu-iskw/pstack-plugin` again, then retry `plugin install`.                                        |
+| Agents missing                          | Run `claude agents` from the repo root if you used `-s local`, or reinstall with `-s user`.                                                             |
+| `plugin list` fails with `--plugin-dir` | Run from the **pstack-plugin** repo root; use `claude --plugin-dir=plugins/pstack plugin list` (equals form). Not used after a normal `plugin install`. |
+
+More detail: [plugins/pstack/docs/claude-smoke-checklist.md](plugins/pstack/docs/claude-smoke-checklist.md).
 
 ## License
 
-Apache License 2.0. See `LICENSE`.
+**MIT** (Lauren Tan), same as [cursor/plugins/pstack](https://github.com/cursor/plugins/tree/main/pstack). See [LICENSE](LICENSE) and [plugins/pstack/LICENSE](plugins/pstack/LICENSE).
+
+## Contributing
+
+Repository layout, CI, upstream sync, and verification for maintainers: [CONTRIBUTING.md](CONTRIBUTING.md).

@@ -91,6 +91,17 @@ for plugin in "${PLUGINS[@]}"; do
 	echo ">>> Testing plugin: ${plugin}"
 	run_test "Agent Plugins manifest validation" "validate-manifest.sh" "${plugin}"
 
+	if [[ "$(basename "${plugin}")" == pstack ]]; then
+		run_test "pstack upstream license" "validate-pstack-license.sh" "${plugin}"
+		run_test "pstack Claude components" "validate-pstack-claude-components.sh" "${plugin}"
+		run_test "pstack haiku temp HOME" "validate-pstack-haiku-temp-home.sh" "${plugin}"
+		run_test "pstack Claude live smoke contract" "validate-pstack-claude-live-smoke-contract.sh" "${plugin}"
+		run_test "pstack live-manual log freshness" "validate-pstack-live-manual-log.sh" "${plugin}"
+		run_test "pstack operator live smoke script" "validate-operator-live-smoke.sh" "${plugin}"
+		run_test "pstack live log haiku policy" "validate-pstack-live-log-policy.sh" "${plugin}"
+		run_test "pstack live resume skip policy" "validate-pstack-live-resume-skip.sh" "${plugin}"
+	fi
+
 	# Adapter manifests are manifest-level validation and must run even in
 	# --manifest-only mode.
 	if [[ -d "${plugin}/.cursor-plugin" ]]; then

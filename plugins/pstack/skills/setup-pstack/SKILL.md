@@ -7,64 +7,106 @@ description: Configure which models pstack uses per role and at what reasoning b
 
 Write `~/.claude/pstack-models.mdc`, a user-level config file that pstack skills read for model-per-role overrides.
 
+Canonical Claude Code defaults live under the plugin `claude/` directory (maintained by **tune-pstack-models**):
+
+| Profile          | File                                                                   |
+| ---------------- | ---------------------------------------------------------------------- |
+| `balanced`       | `${CLAUDE_PLUGIN_ROOT}/claude/pstack-role-defaults.txt`                |
+| `cost-efficient` | `${CLAUDE_PLUGIN_ROOT}/claude/pstack-role-defaults.cost-efficient.txt` |
+
 ## Steps
 
 ### 1. Detect available models
 
 Enumerate model identifiers you can assign to subagents (Agent tool `model` parameter, `/model`, or your environment's model list). If you cannot detect any, ask the user to paste the models they have access to. Never write a model id you have not confirmed is available. The aliases `inherit-parent` and `auto` are always valid even though they are not detected slugs.
 
+Prefer Claude Code aliases `opus`, `sonnet`, and `haiku` in role lines ([model configuration](https://code.claude.com/docs/en/model-config)). Treat them as available when the environment is first-party Claude Code. Otherwise map detected full slugs (`claude-opus-*`, `claude-sonnet-*`, `claude-haiku-*`) to the closest tier.
+
 ### 2. Load current state
 
-The default role-to-model mapping is the shape shown in step 5 below. If `~/.claude/pstack-models.mdc` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it.
+If `~/.claude/pstack-models.mdc` already exists, read its `# profile`, `# budget`, and role lines as the current choices.
+
+Otherwise start from the profile file for the budget the user will pick in step 3 (see profile table below). If the plugin is installed, read that file from `${CLAUDE_PLUGIN_ROOT}/claude/`; if not installed, use the balanced example in step 5.
+
+Drop retired roles such as `how critics`.
+
+**Budget → profile → defaults file**
+
+| Budget      | Profile          | Defaults file                             |
+| ----------- | ---------------- | ----------------------------------------- |
+| `unlimited` | `balanced`       | `pstack-role-defaults.txt`                |
+| `large`     | `balanced`       | `pstack-role-defaults.txt`                |
+| `medium`    | `cost-efficient` | `pstack-role-defaults.cost-efficient.txt` |
+| `small`     | `cost-efficient` | `pstack-role-defaults.cost-efficient.txt` |
 
 ### 3. Budget, map, and confirm
 
-**(a) Ask for a budget.** Prefer structured multiple-choice over free text when available. Offer these four options with these exact labels, and name the current budget when the file records one. With no file, say that `large` matches the skill defaults.
+**(a) Ask for a budget.** Prefer structured multiple-choice when available. Offer these four options with these exact labels, and name the current budget when the file records one. With no file, say that `large` selects the **balanced** profile.
 
 - `unlimited — max reasoning`
-- `large — xhigh reasoning`
-- `medium — high reasoning`
-- `small — medium reasoning`
+- `large — high reasoning`
+- `medium — medium reasoning`
+- `small — low reasoning`
 
-**(b) Apply it.** Build the working table from the skill defaults, and on a re-run keep any role you changed by family, list, or alias (`inherit-parent`, `auto`). `unlimited`, `large`, `medium`, and `small` set the effort token of every real slug, panel entries included, to `max`, `xhigh`, `high`, or `medium`. The effort token is the last token, or the one before a trailing `fast`, on the ladder `max` > `xhigh` > `high` > `medium` > `low`. If the result is not a detected slug, use the same family's detected slug with the highest effort at or below the target, else mark the role as needing a choice. `inherit-parent` and `auto` do not change. So `unlimited` turns `claude-opus-5-5-xhigh` into `claude-opus-5-5-max`. Grok slugs top out at `xhigh`, so under `unlimited` the fallback puts Grok at `xhigh` and keeps `grok-4.7-xhigh-fast` as it is. `large` keeps both defaults. `small` turns them into `claude-opus-5-5-medium` and `grok-4.7-medium-fast`.
+**(b) Apply profile and effort.** Load role lines from the defaults file for the chosen budget (table in step 2). On a re-run, keep any role the user changed manually.
 
-**(c) Show the roles and confirm.** Show every role with its model, marking any real slug not in the detected set as needing a choice. Also list each line step 2 dropped. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit-parent` and `auto` (both mean: this role runs on the parent chat model) as the options. For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, alias entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one value from it whose model family differs from the parent's when possible. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
+Write `# profile: balanced` or `# profile: cost-efficient` to match the file. Write `# budget: <label> (<effort summary>)` using the profile’s header budget as a template when the user keeps the default mapping.
+
+Map budget to effort on each slug when the environment supports effort tokens (`max` > `high` > `medium` > `low`):
+
+| Budget    | Opus-tier slugs   | Sonnet-tier slugs | Haiku-tier slugs |
+| --------- | ----------------- | ----------------- | ---------------- |
+| unlimited | highest available | high              | high             |
+| large     | high              | high              | medium           |
+| medium    | medium            | medium            | low              |
+| small     | low               | low               | low              |
+
+If a target effort is unavailable on a slug, use the highest effort at or below the target in the same family. `inherit-parent` and `auto` never change.
+
+Pricing and floors for maintainers: [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing); repo **tune-pstack-models** skill (`pricing-policy.md`, `capability-floors.md`).
+
+**(c) Show the roles and confirm.** Show every role with its model and the selected profile, marking any slug not in the detected set as needing a choice. List dropped retired roles. Offer detected models plus `inherit-parent` and `auto`. Panel roles use comma-separated lists (one subagent per entry).
 
 ### 4. Validate
 
-Every real slug written must be in the detected set. `inherit-parent` and `auto` always pass. If a chosen real slug is not available, stop and ask again.
+Every real slug written must be in the detected set. `inherit-parent` and `auto` always pass. If a chosen slug is not available, stop and ask again.
 
 ### 5. Write the config file
 
-Create `~/.claude/` if needed. Write `~/.claude/pstack-models.mdc` with a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels poteto-mode uses. Overwrite the whole file so re-runs stay idempotent. Shape:
+Create `~/.claude/` if needed. Write `~/.claude/pstack-models.mdc` with `# profile`, `# budget`, and one line per role. Overwrite the whole file so re-runs stay idempotent.
+
+**Balanced fallback example** (when the plugin defaults file is unavailable):
 
 ```
 # pstack model configuration. One line per role. Delete a line to fall back to the skill default.
-# `inherit-parent` or `auto` as a value: the role runs on the parent chat model (omit subagent `model`). Alias entries in a panel list still count toward its fan-out.
-# budget: large (xhigh)
-feature, refactoring: grok-4.7-xhigh-fast
-bug-fix: grok-4.7-xhigh-fast
-perf-issue: grok-4.7-xhigh-fast
-hillclimb: grok-4.7-xhigh-fast
-judgment and prose: claude-opus-5-5-xhigh
-hardest tasks: claude-opus-5-5-xhigh
-how explorer: grok-4.7-xhigh-fast
-how explainer: claude-opus-5-5-xhigh
-why investigators: grok-4.7-xhigh-fast
-why synthesizer: claude-opus-5-5-xhigh
-reflect tooling: grok-4.7-xhigh-fast
-reflect judgment, divergent, synthesizer: claude-opus-5-5-xhigh
-arena runners: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
-arena cross-judge pool: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
-swarm workers: grok-4.7-xhigh-fast
-architect runners: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
-interrogate reviewers: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
+# `inherit-parent` or `auto`: run on the parent chat model (omit subagent `model`).
+# profile: balanced
+# budget: large (high)
+feature, refactoring: sonnet
+bug-fix: sonnet
+perf-issue: sonnet
+hillclimb: sonnet
+judgment and prose: opus
+hardest tasks: opus
+how explorer: haiku
+how explainer: opus
+why investigators: haiku
+why synthesizer: opus
+reflect tooling: sonnet
+reflect judgment, divergent, synthesizer: opus
+arena runners: sonnet, opus
+arena cross-judge pool: opus, sonnet
+swarm workers: haiku
+architect runners: opus, sonnet
+interrogate reviewers: opus, sonnet
 ```
+
+For `medium` or `small`, prefer reading `pstack-role-defaults.cost-efficient.txt` from the plugin instead of this block.
 
 ### 6. Confirm
 
-Tell the user the file was written and that new sessions should pick it up. Re-running this skill updates it. Optional: set `CLAUDE_CODE_SUBAGENT_MODEL` for a global subagent default (see Claude Code subagent docs).
+Tell the user the file was written, which profile was selected, and that new sessions should pick it up. Optional: set `CLAUDE_CODE_SUBAGENT_MODEL` for a global subagent default (see Claude Code subagent docs).
 
 ### 7. Offer a verification skill (optional)
 
-Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, invoke `/create-verification-skill` (resolves wherever pstack is installed: workspace, user, or plugin). On no, move on without pushing.
+Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, invoke `/create-verification-skill`. On no, move on without pushing.

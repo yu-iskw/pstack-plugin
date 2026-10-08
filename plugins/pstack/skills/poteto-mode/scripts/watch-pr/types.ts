@@ -262,8 +262,10 @@ interface EventBase<K extends string, M extends WatchMode = WatchMode> {
   readonly mode: M;
   readonly kind: K;
 }
-interface Progress<K extends string, M extends WatchMode = WatchMode>
-  extends EventBase<K, M> {
+interface Progress<
+  K extends string,
+  M extends WatchMode = WatchMode,
+> extends EventBase<K, M> {
   readonly terminal: false;
 }
 interface Terminal<
@@ -387,7 +389,7 @@ export interface GitHubReader {
   checksFastPath(context: PrContext): Promise<ChecksFastPath>;
   checkRollupPage(
     context: PrContext,
-    after: string | null
+    after: string | null,
   ): Promise<RollupPage>;
   reviewThreads(context: PrContext): Promise<readonly ReviewThread[]>;
   commitRollups(context: PrContext): Promise<readonly CommitRollup[]>;

@@ -1,0 +1,110 @@
+{
+  "pricingSource": "https://platform.claude.com/docs/en/about-claude/pricing",
+  "pricingAsOf": "2026-10-08",
+  "notes": "USD per million tokens (base input / output). Role lines use Claude Code aliases opus, sonnet, haiku (see references/claude-code-model-aliases.md). models[].slug holds full ids for pricing and setup-pstack detection. Update pricingAsOf when Anthropic changes pricing, then run scripts/render-role-defaults.sh.",
+  "models": [
+    {
+      "displayName": "Claude Opus 5.5",
+      "slug": "claude-opus-5-5",
+      "tier": "flagship",
+      "inputUsdPerMTok": 4,
+      "outputUsdPerMTok": 20,
+      "claudeCodeAliases": ["opus"]
+    },
+    {
+      "displayName": "Claude Sonnet 5.5",
+      "slug": "claude-sonnet-5-5",
+      "tier": "balanced",
+      "inputUsdPerMTok": 2,
+      "outputUsdPerMTok": 10,
+      "claudeCodeAliases": ["sonnet"]
+    },
+    {
+      "displayName": "Claude Haiku 5.5",
+      "slug": "claude-haiku-5-5",
+      "tier": "fast",
+      "inputUsdPerMTok": 0.1,
+      "outputUsdPerMTok": 0.5,
+      "pricingNote": "Base input/output for prompts ≤100k tokens; see pricing page for >100k tier",
+      "claudeCodeAliases": ["haiku"]
+    }
+  ],
+  "budgetProfile": {
+    "unlimited": "balanced",
+    "large": "balanced",
+    "medium": "costEfficient",
+    "small": "costEfficient"
+  },
+  "profiles": {
+    "balanced": {
+      "profile": "balanced",
+      "defaultBudget": "large",
+      "headerBudget": "large (high)",
+      "outputFile": "pstack-role-defaults.txt",
+      "roleDefaults": {
+        "feature, refactoring": "sonnet",
+        "bug-fix": "sonnet",
+        "perf-issue": "sonnet",
+        "hillclimb": "sonnet",
+        "judgment and prose": "opus",
+        "hardest tasks": "opus",
+        "how explorer": "haiku",
+        "how explainer": "opus",
+        "why investigators": "haiku",
+        "why synthesizer": "opus",
+        "reflect tooling": "sonnet",
+        "reflect judgment, divergent, synthesizer": "opus",
+        "arena runners": ["sonnet", "opus"],
+        "arena cross-judge pool": ["opus", "sonnet"],
+        "swarm workers": "haiku",
+        "architect runners": ["opus", "sonnet"],
+        "interrogate reviewers": ["opus", "sonnet"]
+      },
+      "skillFallbacks": {
+        "codeDelegate": "sonnet",
+        "judgment": "opus",
+        "highVolumeWorker": "haiku",
+        "arenaRunnerA": "sonnet",
+        "arenaRunnerB": "opus"
+      }
+    },
+    "costEfficient": {
+      "profile": "cost-efficient",
+      "defaultBudget": "medium",
+      "headerBudget": "medium (medium)",
+      "outputFile": "pstack-role-defaults.cost-efficient.txt",
+      "roleDefaults": {
+        "feature, refactoring": "haiku",
+        "bug-fix": "sonnet",
+        "perf-issue": "sonnet",
+        "hillclimb": "sonnet",
+        "judgment and prose": "sonnet",
+        "hardest tasks": "sonnet",
+        "how explorer": "haiku",
+        "how explainer": "sonnet",
+        "why investigators": "haiku",
+        "why synthesizer": "sonnet",
+        "reflect tooling": "haiku",
+        "reflect judgment, divergent, synthesizer": "sonnet",
+        "arena runners": ["sonnet", "haiku"],
+        "arena cross-judge pool": ["sonnet", "haiku"],
+        "swarm workers": "haiku",
+        "architect runners": ["sonnet", "haiku"],
+        "interrogate reviewers": ["sonnet", "haiku"]
+      },
+      "skillFallbacks": {
+        "codeDelegate": "sonnet",
+        "judgment": "sonnet",
+        "highVolumeWorker": "haiku",
+        "arenaRunnerA": "sonnet",
+        "arenaRunnerB": "haiku"
+      }
+    }
+  },
+  "budgetEffort": {
+    "unlimited": { "opus": "max", "sonnet": "high", "haiku": "high" },
+    "large": { "opus": "high", "sonnet": "high", "haiku": "medium" },
+    "medium": { "opus": "medium", "sonnet": "medium", "haiku": "low" },
+    "small": { "opus": "low", "sonnet": "low", "haiku": "low" }
+  }
+}

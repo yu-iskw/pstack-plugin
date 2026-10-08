@@ -1,0 +1,22 @@
+# pstack model configuration (haiku-only smoke test). Not part of the pstack plugin.
+# Used via project AGENTS.md @-include for --live / --live-only (no ~/.claude write).
+# profile: haiku-verification
+# budget: small (low)
+# Role lines use Claude Code aliases (https://code.claude.com/docs/en/model-config).
+feature, refactoring: haiku
+bug-fix: haiku
+perf-issue: haiku
+hillclimb: haiku
+judgment and prose: haiku
+hardest tasks: haiku
+how explorer: haiku
+how explainer: haiku
+why investigators: haiku
+why synthesizer: haiku
+reflect tooling: haiku
+reflect judgment, divergent, synthesizer: haiku
+arena runners: haiku, haiku
+arena cross-judge pool: haiku, haiku
+swarm workers: haiku
+architect runners: haiku, haiku
+interrogate reviewers: haiku, haiku
