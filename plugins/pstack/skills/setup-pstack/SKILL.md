@@ -20,7 +20,7 @@ Canonical Claude Code defaults live under the plugin `claude/` directory (mainta
 
 Enumerate model identifiers you can assign to subagents (Agent tool `model` parameter, `/model`, or your environment's model list). If you cannot detect any, ask the user to paste the models they have access to. Never write a model id you have not confirmed is available. The aliases `inherit-parent` and `auto` are always valid even though they are not detected slugs.
 
-Common Claude families: `claude-opus-*`, `claude-sonnet-*`, `claude-haiku-*`, or short aliases `opus`, `sonnet`, `haiku` when supported.
+Prefer Claude Code aliases `opus`, `sonnet`, and `haiku` in role lines ([model configuration](https://code.claude.com/docs/en/model-config)). Treat them as available when the environment is first-party Claude Code. Otherwise map detected full slugs (`claude-opus-*`, `claude-sonnet-*`, `claude-haiku-*`) to the closest tier.
 
 ### 2. Load current state
 
@@ -82,23 +82,23 @@ Create `~/.claude/` if needed. Write `~/.claude/pstack-models.mdc` with `# profi
 # `inherit-parent` or `auto`: run on the parent chat model (omit subagent `model`).
 # profile: balanced
 # budget: large (high)
-feature, refactoring: claude-sonnet-5-5
-bug-fix: claude-sonnet-5-5
-perf-issue: claude-sonnet-5-5
-hillclimb: claude-sonnet-5-5
-judgment and prose: claude-opus-5-5
-hardest tasks: claude-opus-5-5
+feature, refactoring: sonnet
+bug-fix: sonnet
+perf-issue: sonnet
+hillclimb: sonnet
+judgment and prose: opus
+hardest tasks: opus
 how explorer: haiku
-how explainer: claude-opus-5-5
+how explainer: opus
 why investigators: haiku
-why synthesizer: claude-opus-5-5
-reflect tooling: claude-sonnet-5-5
-reflect judgment, divergent, synthesizer: claude-opus-5-5
-arena runners: claude-sonnet-5-5, claude-opus-5-5
-arena cross-judge pool: claude-opus-5-5, claude-sonnet-5-5
+why synthesizer: opus
+reflect tooling: sonnet
+reflect judgment, divergent, synthesizer: opus
+arena runners: sonnet, opus
+arena cross-judge pool: opus, sonnet
 swarm workers: haiku
-architect runners: claude-opus-5-5, claude-sonnet-5-5
-interrogate reviewers: claude-opus-5-5, claude-sonnet-5-5
+architect runners: opus, sonnet
+interrogate reviewers: opus, sonnet
 ```
 
 For `medium` or `small`, prefer reading `pstack-role-defaults.cost-efficient.txt` from the plugin instead of this block.

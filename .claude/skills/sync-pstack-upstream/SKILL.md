@@ -67,5 +67,6 @@ Commit the vendored tree, `UPSTREAM.json`, and any version manifest updates.
 
 ## Related skills
 
+- Try pstack on Claude Code: `../try-pstack-claude/SKILL.md`
 - Plugin verification: `../plugin-verification/SKILL.md`
 - Implement agent skills: `../implement-agent-skills/SKILL.md`

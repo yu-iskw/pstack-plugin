@@ -1,0 +1,11 @@
+Warning: Opus: Opus 5.5 not available — using Sonnet 4.5. Enable Opus 5.5 in Model Garden to upgrade.
+PSTACK_LIVE=ok
+POTETO_HELP_SKILL=ok
+POTETO_MODE_SKILL=ok
+PSTACK_PLUGIN_AGENT=ok
+PSTACK_COMMENT_SICKO=ok
+SLASH_POTETO_HELP=ok
+SLASH_POTETO_MODE=ok
+PSTACK_AGENT_TOOL=ok
+PSTACK_COMMENT_SICKO_TOOL=ok
+OK: Static + live haiku smoke passed (including slash + Agent-tool workflow tokens).

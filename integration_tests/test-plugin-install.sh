@@ -30,6 +30,7 @@ fi
 
 # Workspace root (repo root); caller sets cwd (e.g. /workspace in Docker)
 WORKSPACE_ROOT="${1:-.}"
+WORKSPACE_ROOT="$(CDPATH='' cd -- "${WORKSPACE_ROOT}" && pwd)"
 MARKETPLACE_JSON="${WORKSPACE_ROOT}/.claude-plugin/marketplace.json"
 
 if [[ ! -f ${MARKETPLACE_JSON} ]]; then
@@ -54,13 +55,12 @@ echo "Testing plugin install from marketplace: ${MARKETPLACE_NAME}"
 
 # Add workspace as marketplace (path to repo root; CLI may accept dir with .claude-plugin)
 echo "Adding marketplace from ${WORKSPACE_ROOT}..."
-if ! claude plugin marketplace add "${WORKSPACE_ROOT}" 2>/dev/null; then
-	# Some CLIs expect directory containing marketplace manifest
-	if ! claude plugin marketplace add "${WORKSPACE_ROOT}/.claude-plugin" 2>/dev/null; then
-		echo "ERROR: Failed to add marketplace from ${WORKSPACE_ROOT} or ${WORKSPACE_ROOT}/.claude-plugin"
-		claude plugin marketplace add "${WORKSPACE_ROOT}" || true
-		exit 1
-	fi
+# Claude CLI requires an absolute path or ./relative — not bare ".".
+if claude plugin marketplace list 2>/dev/null | grep -Fq "${MARKETPLACE_NAME}"; then
+	echo "Marketplace ${MARKETPLACE_NAME} already registered; skipping add."
+elif ! claude plugin marketplace add "${WORKSPACE_ROOT}"; then
+	echo "ERROR: Failed to add marketplace from ${WORKSPACE_ROOT}" >&2
+	exit 1
 fi
 
 # Install each plugin with project scope (container-local)
@@ -85,19 +85,24 @@ if [[ -z ${LIST_JSON} ]]; then
 fi
 
 for name in ${PLUGIN_NAMES}; do
-	if echo "${LIST_JSON}" | jq -e --arg n "${name}" '.installed[]? | select(.name == $n)' >/dev/null 2>&1; then
-		echo "  ${name}: found in installed list"
+	plugin_id="${name}@${MARKETPLACE_NAME}"
+	if echo "${LIST_JSON}" | jq -e --arg id "${plugin_id}" '.[]? | select(.id == $id)' >/dev/null 2>&1; then
+		echo "  ${plugin_id}: found in plugin list"
 	elif echo "${LIST_JSON}" | jq -e --arg n "${name}" '.[]? | select(.name == $n)' >/dev/null 2>&1; then
-		echo "  ${name}: found in list"
+		echo "  ${name}: found in list (legacy shape)"
 	else
-		echo "WARNING: ${name} not found in plugin list output; structure may differ"
+		echo "WARNING: ${plugin_id} not found in plugin list output"
 	fi
 done
 
-# Minimal load check without --plugin-dir (plugin should be loaded from install location)
+# Minimal load check without --plugin-dir (requires login for API)
 echo "Checking plugin load without --plugin-dir..."
-if ! claude --print "Reply with exactly: ok" 2>/dev/null | grep -q "ok"; then
-	echo "WARNING: Minimal --print check did not succeed; install may still be valid"
+if claude auth status 2>/dev/null | jq -e '.loggedIn == true' >/dev/null 2>&1; then
+	if ! echo 'Reply with exactly: ok' | claude --print 2>/dev/null | grep -q "ok"; then
+		echo "WARNING: Minimal --print check did not succeed; install may still be valid"
+	fi
+else
+	echo "Skipping --print check (not logged in)."
 fi
 
 echo "Plugin install test passed"

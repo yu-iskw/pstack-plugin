@@ -2,21 +2,21 @@
 # pricingAsOf: 2026-10-08 — https://platform.claude.com/docs/en/about-claude/pricing
 # profile: cost-efficient
 # budget: medium (medium)
-# Fast roles use alias haiku (Claude Haiku 5.5 when available).
+# Role lines use Claude Code aliases opus, sonnet, haiku (https://code.claude.com/docs/en/model-config).
 feature, refactoring: haiku
-bug-fix: claude-sonnet-5-5
-perf-issue: claude-sonnet-5-5
-hillclimb: claude-sonnet-5-5
-judgment and prose: claude-sonnet-5-5
-hardest tasks: claude-sonnet-5-5
+bug-fix: sonnet
+perf-issue: sonnet
+hillclimb: sonnet
+judgment and prose: sonnet
+hardest tasks: sonnet
 how explorer: haiku
-how explainer: claude-sonnet-5-5
+how explainer: sonnet
 why investigators: haiku
-why synthesizer: claude-sonnet-5-5
+why synthesizer: sonnet
 reflect tooling: haiku
-reflect judgment, divergent, synthesizer: claude-sonnet-5-5
-arena runners: claude-sonnet-5-5, haiku
-arena cross-judge pool: claude-sonnet-5-5, haiku
+reflect judgment, divergent, synthesizer: sonnet
+arena runners: sonnet, haiku
+arena cross-judge pool: sonnet, haiku
 swarm workers: haiku
-architect runners: claude-sonnet-5-5, haiku
-interrogate reviewers: claude-sonnet-5-5, haiku
+architect runners: sonnet, haiku
+interrogate reviewers: sonnet, haiku

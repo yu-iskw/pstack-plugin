@@ -32,7 +32,7 @@ render_profile() {
 		echo "# pricingAsOf: ${pricing_as_of} — ${pricing_source}"
 		echo "# profile: ${profile_label}"
 		echo "# budget: ${header_budget}"
-		echo "# Fast roles use alias haiku (Claude Haiku 5.5 when available)."
+		echo "# Role lines use Claude Code aliases opus, sonnet, haiku (https://code.claude.com/docs/en/model-config)."
 		jq -r --arg k "${profile_key}" \
 			'.profiles[$k].roleDefaults | to_entries[] | if (.value | type) == "array" then "\(.key): \(.value | join(", "))" else "\(.key): \(.value)" end' \
 			"${ROSTER}"

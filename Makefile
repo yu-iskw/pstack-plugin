@@ -24,3 +24,17 @@ format:
 test-integration-docker:
 	docker build -f integration_tests/Dockerfile -t claude-plugin-template-smoke .
 	docker run --rm claude-plugin-template-smoke
+
+.PHONY: verify-pstack-claude verify-pstack-claude-live
+verify-pstack-claude:
+	./scripts/verify-pstack-claude-workspace.sh
+
+verify-pstack-claude-live:
+	./scripts/verify-pstack-claude-workspace.sh --live
+
+verify-pstack-claude-live-only:
+	./scripts/verify-pstack-claude-workspace.sh --live-only
+
+.PHONY: verify-pstack-claude-live-record
+verify-pstack-claude-live-record:
+	./scripts/operator-run-live-smoke.sh

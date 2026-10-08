@@ -6,7 +6,7 @@ The **cost-efficient** profile lowers tier per role; these floors prevent silent
 
 | Role group                                                                                           | Floor (minimum tier)                                 | Rationale                                                                                     |
 | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `bug-fix`, `perf-issue`, `hillclimb`                                                                 | Sonnet (`claude-sonnet-5-5`)                         | Long-horizon and agentic coding; Haiku trails Sonnet on SWE-bench Pro–class tasks             |
+| `bug-fix`, `perf-issue`, `hillclimb`                                                                 | Sonnet (`sonnet` alias)                              | Long-horizon and agentic coding; Haiku trails Sonnet on SWE-bench Pro–class tasks             |
 | `hardest tasks`                                                                                      | Sonnet                                               | Cross-cutting design and gnarly work; Opus optional in balanced only                          |
 | `feature, refactoring`                                                                               | Haiku allowed                                        | Mechanical or well-scoped feature work; user can override up to Sonnet in `pstack-models.mdc` |
 | `how explorer`, `why investigators`, `swarm workers`                                                 | Haiku                                                | Read-heavy / high fan-out; designed for parallel cheap seats                                  |
@@ -20,4 +20,4 @@ Balanced uses Opus for judgment and hardest tasks and Sonnet for primary code de
 
 ## Aliases
 
-Prefer `haiku`, `sonnet`, and `opus` in role files when Claude Code resolves them to current 5.5 models. Use full slugs when detection or billing requires an explicit id.
+Role files and `pstack-models.mdc` should use Claude Code aliases `haiku`, `sonnet`, and `opus` (see [claude-code-model-aliases.md](claude-code-model-aliases.md)). Use full slugs from `models[].slug` only when `/setup-pstack` detects a non-first-party environment or the user pins a version.

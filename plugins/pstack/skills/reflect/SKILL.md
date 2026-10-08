@@ -32,17 +32,17 @@ One message, three `Agent` calls, `subagent_type: generalPurpose`, with `model` 
 
 Each reviewer and the synthesizer name a role line in the `pstack-models.mdc` rule and a default. Set `model` to that line's value, or to the default if the rule or the line is missing. Leave `model` unset when the value is `auto` or `inherit-parent`. If the Agent tool rejects a slug, use the default and say so. If it rejects the default, use the closest valid slug of the same family from its error message.
 
-| Lens      | Role line                                  | Default `model`     | Prompt template                    |
-| --------- | ------------------------------------------ | ------------------- | ---------------------------------- |
-| Judgment  | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5`   | `references/judgment-reviewer.md`  |
-| Tooling   | `reflect tooling`                          | `claude-sonnet-5-5` | `references/tooling-reviewer.md`   |
-| Divergent | `reflect judgment, divergent, synthesizer` | `claude-opus-5-5`   | `references/divergent-reviewer.md` |
+| Lens      | Role line                                  | Default `model` | Prompt template                    |
+| --------- | ------------------------------------------ | --------------- | ---------------------------------- |
+| Judgment  | `reflect judgment, divergent, synthesizer` | `opus`          | `references/judgment-reviewer.md`  |
+| Tooling   | `reflect tooling`                          | `sonnet`        | `references/tooling-reviewer.md`   |
+| Divergent | `reflect judgment, divergent, synthesizer` | `opus`          | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Agent` response body.
 
 ### 3. Synthesize
 
-One `Agent` call, `subagent_type: generalPurpose`, with `model` from the `reflect judgment, divergent, synthesizer` line (default `claude-opus-5-5`), agent mode (`readonly: false`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Readonly strips MCPs. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+One `Agent` call, `subagent_type: generalPurpose`, with `model` from the `reflect judgment, divergent, synthesizer` line (default `opus`), agent mode (`readonly: false`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access. Readonly strips MCPs. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 

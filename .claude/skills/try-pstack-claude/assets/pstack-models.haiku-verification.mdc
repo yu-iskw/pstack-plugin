@@ -1,8 +1,8 @@
-# pstack role defaults (Claude Code). Haiku-only profile for workspace verification.
+# pstack model configuration (haiku-only smoke test). Not part of the pstack plugin.
+# Used via project AGENTS.md @-include for --live / --live-only (no ~/.claude write).
 # profile: haiku-verification
 # budget: small (low)
-# Copy to ~/.claude/pstack-models.mdc only when you accept a user-level file for live tests.
-# Prefer: scripts/verify-pstack-claude-workspace.sh --live (uses a temp HOME + this file).
+# Role lines use Claude Code aliases (https://code.claude.com/docs/en/model-config).
 feature, refactoring: haiku
 bug-fix: haiku
 perf-issue: haiku

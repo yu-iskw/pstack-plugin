@@ -8,12 +8,15 @@ From the repo root, without editing global `~/.claude` settings:
 
 ```bash
 ./scripts/verify-pstack-claude-workspace.sh
+# or: ./.claude/skills/try-pstack-claude/scripts/run-workspace-verify.sh
 ```
 
-Optional haiku API smoke (temp `pstack-models` only; requires `claude login`):
+Full workflow: [.claude/skills/try-pstack-claude/SKILL.md](../../../.claude/skills/try-pstack-claude/SKILL.md).
+
+Optional haiku API smoke (project `AGENTS.md` fixture; requires `claude login`):
 
 ```bash
-./scripts/verify-pstack-claude-workspace.sh --live
+./scripts/verify-pstack-claude-workspace.sh --live-only
 ```
 
 Ephemeral load (no install): `claude --plugin-dir=plugins/pstack plugin list` must list `pstack`.
@@ -28,7 +31,7 @@ claude --setting-sources project,local agents   # expect pstack:poteto-agent, ps
 
 `.claude/settings.local.json` can register the same marketplace with `extraKnownMarketplaces` (`path: "."` from repo root). If install fails with “plugin not found”, run `marketplace add` with the absolute repo path above.
 
-Use `--model haiku` in the CLI for cost-efficient manual runs. For all roles on haiku during live tests, use `plugins/pstack/claude/pstack-role-defaults.haiku-verification.txt` (see verify script `--live`).
+Use `--model haiku` for the parent session. For **all roles on haiku** without touching `~/.claude/pstack-models.mdc`, use repo-root `AGENTS.md` or `./scripts/claude-pstack-interactive-haiku.sh`. Maintainer live smoke: `make verify-pstack-claude-live-record` from [pstack-plugin](https://github.com/yu-iskw/pstack-plugin) (not cursor/plugins).
 
 ## Install (any checkout)
 
@@ -43,8 +46,8 @@ Use `--model haiku` in the CLI for cost-efficient manual runs. For all roles on 
 
 ## Core workflows
 
-1. Run `/poteto-help` with a simple question (e.g. which playbook for a small bug fix).
-2. Run `/poteto-mode` on a trivial, read-only task (e.g. explain how a file works) and confirm it routes without errors.
+1. Run `/pstack:poteto-help` (marketplace install) with a simple question (e.g. which playbook for a small bug fix).
+2. Run `/pstack:poteto-mode` on a trivial, read-only task (e.g. explain how a file works) and confirm it routes without errors.
 3. Invoke a bundled subagent (e.g. `pstack:poteto-agent` or Comment Sicko) if exposed in your session.
 
 ## Regression notes

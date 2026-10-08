@@ -17,6 +17,14 @@
 | `plugins/pstack/UPSTREAM.json`                  | Written by sync script                     |
 | `plugins/pstack/claude/`                        | Role defaults and other Claude-only assets |
 
+## License (synced from upstream)
+
+| Path                     | Purpose                                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `plugins/pstack/LICENSE` | Upstream MIT (Lauren Tan); updated by rsync — keep in sync with repository root `LICENSE` (also MIT). |
+
+Owned manifests must keep `"license": "MIT"` and `"repository": "https://github.com/cursor/plugins"` like [upstream pstack](https://github.com/cursor/plugins/tree/main/pstack).
+
 ## After a successful sync
 
 1. Read `plugins/pstack/UPSTREAM.json` for `commit` and `version`.

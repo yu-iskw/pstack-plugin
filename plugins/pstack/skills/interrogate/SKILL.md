@@ -35,10 +35,10 @@ Write one clear paragraph. If you're unsure about the intent, ask the user befor
 
 Launch all reviewers in a single message using the Agent tool. Use the `interrogate reviewers` line in `~/.claude/pstack-models.mdc`, one reviewer per entry, extending or shrinking the Reviewer A/B labels below to the configured entry count. If the rule or that line is missing, use the table defaults.
 
-| Subagent   | Default model       |
-| ---------- | ------------------- |
-| Reviewer A | `claude-opus-5-5`   |
-| Reviewer B | `claude-sonnet-5-5` |
+| Subagent   | Default model |
+| ---------- | ------------- |
+| Reviewer A | `opus`        |
+| Reviewer B | `sonnet`      |
 
 For each reviewer:
 

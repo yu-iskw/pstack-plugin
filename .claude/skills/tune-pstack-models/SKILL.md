@@ -47,8 +47,7 @@ This writes:
 
 - [plugins/pstack/claude/pstack-role-defaults.txt](../../../plugins/pstack/claude/pstack-role-defaults.txt) (balanced)
 - [plugins/pstack/claude/pstack-role-defaults.cost-efficient.txt](../../../plugins/pstack/claude/pstack-role-defaults.cost-efficient.txt)
-
-Owned paths; not vendored from cursor/plugins.
+  Owned paths; not vendored from cursor/plugins. All-haiku smoke fixtures live in [try-pstack-claude](../try-pstack-claude/SKILL.md), not under `plugins/pstack/`.
 
 ### 4. Align setup-pstack
 
@@ -71,6 +70,7 @@ Ask a user to re-run `/setup-pstack` with `large` vs `medium` and confirm `~/.cl
 - Cost vs role policy: [references/pricing-policy.md](references/pricing-policy.md)
 - Benchmarks: [references/benchmark-sources.md](references/benchmark-sources.md)
 - Floors: [references/capability-floors.md](references/capability-floors.md)
+- Claude Code aliases: [references/claude-code-model-aliases.md](references/claude-code-model-aliases.md)
 - Machine-readable roster: [references/model-roster.json](references/model-roster.json)
 - Upstream vendor sync: [../sync-pstack-upstream/SKILL.md](../sync-pstack-upstream/SKILL.md)
 

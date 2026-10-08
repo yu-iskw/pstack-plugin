@@ -1,5 +1,16 @@
 {
+  "permissions": {
+    "allow": ["Bash(make lint:*)", "Bash(trunk check:*)", "Bash(bash:*)"]
+  },
   "enabledPlugins": {
     "pstack@pstack-plugin": true
+  },
+  "extraKnownMarketplaces": {
+    "pstack-plugin": {
+      "source": {
+        "source": "directory",
+        "path": "."
+      }
+    }
   }
 }
