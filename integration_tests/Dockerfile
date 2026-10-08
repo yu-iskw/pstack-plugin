@@ -9,10 +9,16 @@ RUN apk add --no-cache bash jq && \
 # Copy plugin structure and marketplace manifest (for install test at runtime)
 COPY plugins/ plugins/
 COPY .claude-plugin/ .claude-plugin/
+COPY LICENSE LICENSE
+COPY scripts/ scripts/
+COPY .claude/skills/try-pstack-claude/assets/ .claude/skills/try-pstack-claude/assets/
+COPY integration_tests/fixtures/ integration_tests/fixtures/
+COPY verification-evidence/ verification-evidence/
 
 # Copy test scripts
 COPY integration_tests/*.sh /workspace/integration_tests/
-RUN chmod +x /workspace/integration_tests/*.sh
+RUN chmod +x /workspace/integration_tests/*.sh && \
+	chmod +x /workspace/scripts/*.sh /workspace/scripts/lib/*.sh 2>/dev/null || true
 
 # Run integration tests for all plugins during build
 RUN /workspace/integration_tests/run.sh

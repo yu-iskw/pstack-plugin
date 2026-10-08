@@ -13,24 +13,24 @@
 
 ### 1. Add this repository as a marketplace
 
-Clone the repo (or use a copy you already have), then register it with an **absolute** path:
+Register [yu-iskw/pstack-plugin](https://github.com/yu-iskw/pstack-plugin) from GitHub (no clone required):
 
 ```bash
-git clone https://github.com/yu-iskw/pstack-plugin.git
-cd pstack-plugin
-claude plugin marketplace add "$(pwd)"
+claude plugin marketplace add https://github.com/yu-iskw/pstack-plugin
 ```
 
-`marketplace add` with a bare `.` often fails; use `$(pwd)` or the full path to the clone.
+Shorthand also works: `claude plugin marketplace add yu-iskw/pstack-plugin`.
+
+**Contributors** working in a git clone can use a directory marketplace instead: `claude plugin marketplace add "$(pwd)"` from the repo root (use an absolute path; a bare `.` often fails).
 
 ### 2. Install the `pstack` plugin
 
 Pick a scope:
 
-| Scope                       | Command                                                                               | Use when                               |
-| --------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------- |
-| **User** (all projects)     | `claude plugin install -s user pstack@pstack-plugin`                                  | You want pstack everywhere             |
-| **Local** (this clone only) | `claude --setting-sources project,local plugin install -s local pstack@pstack-plugin` | You only use pstack from this checkout |
+| Scope                    | Command                                               | Use when                                   |
+| ------------------------ | ----------------------------------------------------- | ------------------------------------------ |
+| **User** (all projects)  | `claude plugin install -s user pstack@pstack-plugin`  | You want pstack everywhere                 |
+| **Local** (this machine) | `claude plugin install -s local pstack@pstack-plugin` | Project-local install from the marketplace |
 
 Enable if it is not already on:
 
@@ -40,11 +40,13 @@ claude plugin enable pstack@pstack-plugin
 
 ### 3. Confirm install
 
+After `plugin install`, you do **not** use `--plugin-dir`. Check the installed plugin:
+
 ```bash
 claude plugin list
 ```
 
-You should see `pstack@pstack-plugin`. From a project directory where the plugin is enabled:
+You should see `pstack@pstack-plugin`. From a project where the plugin is enabled:
 
 ```bash
 claude agents
@@ -52,15 +54,16 @@ claude agents
 
 Expect plugin agents such as `pstack:poteto-agent` and `pstack:Comment Sicko`.
 
-### Try without installing (smoke test)
+### Ephemeral load (repo clone only — not the normal install path)
 
-From a clone of this repository:
+If you are **inside a git clone** of [yu-iskw/pstack-plugin](https://github.com/yu-iskw/pstack-plugin) and want to try the plugin **without** `plugin install` (maintainers, CI, quick smoke):
 
 ```bash
+cd /path/to/pstack-plugin   # repo root; plugins/pstack exists only in this tree
 claude --plugin-dir=plugins/pstack plugin list
 ```
 
-Use **`--plugin-dir=`** with equals; a space before `plugin` breaks the command.
+Use **`--plugin-dir=`** with equals; a space before `plugin` breaks the command. End users who installed via marketplace in step 2 should use `claude plugin list` instead.
 
 ## Get started after install
 
@@ -87,12 +90,12 @@ Full skill list and philosophy: [plugins/pstack/README.md](plugins/pstack/README
 
 ## Troubleshooting
 
-| Problem                                 | What to try                                                                                                                                |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `make verify-pstack-claude` not found   | Run maintainer verification from a **clone of this repo** (`pstack-plugin`), not from [cursor/plugins](https://github.com/cursor/plugins). |
-| `plugin not found` on install           | Run `claude plugin marketplace add` with the **absolute** path to this repo again.                                                         |
-| Agents missing                          | Run `claude agents` from the repo root if you used `-s local`, or reinstall with `-s user`.                                                |
-| `plugin list` fails with `--plugin-dir` | Use `claude --plugin-dir=plugins/pstack plugin list` (equals form).                                                                        |
+| Problem                                 | What to try                                                                                                                                             |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `make verify-pstack-claude` not found   | Run maintainer verification from a **clone of this repo** (`pstack-plugin`), not from [cursor/plugins](https://github.com/cursor/plugins).              |
+| `plugin not found` on install           | Run `claude plugin marketplace add https://github.com/yu-iskw/pstack-plugin` again, then retry `plugin install`.                                        |
+| Agents missing                          | Run `claude agents` from the repo root if you used `-s local`, or reinstall with `-s user`.                                                             |
+| `plugin list` fails with `--plugin-dir` | Run from the **pstack-plugin** repo root; use `claude --plugin-dir=plugins/pstack plugin list` (equals form). Not used after a normal `plugin install`. |
 
 More detail: [plugins/pstack/docs/claude-smoke-checklist.md](plugins/pstack/docs/claude-smoke-checklist.md).
 
