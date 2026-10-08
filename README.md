@@ -21,7 +21,7 @@ The portable Agent Plugin package is canonical. Client-specific capabilities liv
 ├── plugins/
 │   └── pstack/
 │       ├── plugin.json               # Agent Plugins v1 manifest
-│       ├── skills/                   # Portable Agent Skills (vendored + patches)
+│       ├── skills/                   # Portable Agent Skills (vendored; Claude fork edits in-tree)
 │       ├── .claude-plugin/           # Claude Code adapter manifest
 │       ├── claude/                   # Claude-only owned defaults (not synced from upstream)
 │       └── agents/                   # Subagent definitions
@@ -99,7 +99,7 @@ Important constraints:
 
 ## pstack plugin (Claude Code)
 
-This repository ships [pstack](https://github.com/cursor/plugins/tree/main/pstack) under `plugins/pstack` for Claude Code. Content is vendored from `cursor/plugins` on `main`, with Claude-specific overlay patches in `patches/pstack/`. Upstream revision is recorded in `plugins/pstack/UPSTREAM.json`.
+This repository ships [pstack](https://github.com/cursor/plugins/tree/main/pstack) under `plugins/pstack` for Claude Code. Content is vendored from `cursor/plugins` on `main`, with Claude-specific changes maintained in-tree. Upstream revision is recorded in `plugins/pstack/UPSTREAM.json`.
 
 **Install:** add this repo as a Claude Code marketplace (`.claude-plugin/marketplace.json`), install `pstack`, then run `/setup-pstack` and use `/poteto-mode` for rigorous work. For Cursor, use the official `pstack` plugin from the Cursor marketplace instead.
 
@@ -110,7 +110,7 @@ This repository ships [pstack](https://github.com/cursor/plugins/tree/main/pstac
 ./integration_tests/run.sh --manifest-only
 ```
 
-Use the [sync-pstack-upstream](.claude/skills/sync-pstack-upstream/SKILL.md) skill (or `/sync-pstack-upstream` when loaded) for the full catch-up workflow. See [patches/pstack/README.md](patches/pstack/README.md) before editing synced files.
+Use the [sync-pstack-upstream](.claude/skills/sync-pstack-upstream/SKILL.md) skill (or `/sync-pstack-upstream` when loaded) for the full catch-up workflow.
 
 Manual smoke checklist: [plugins/pstack/docs/claude-smoke-checklist.md](plugins/pstack/docs/claude-smoke-checklist.md).
 

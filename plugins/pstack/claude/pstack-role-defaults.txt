@@ -1,20 +1,22 @@
 # pstack role defaults (Claude Code). Generated from tune-pstack-models.
 # pricingAsOf: 2026-10-08 — https://platform.claude.com/docs/en/about-claude/pricing
+# profile: balanced
 # budget: large (high)
+# Fast roles use alias haiku (Claude Haiku 5.5 when available).
 feature, refactoring: claude-sonnet-5-5
 bug-fix: claude-sonnet-5-5
 perf-issue: claude-sonnet-5-5
 hillclimb: claude-sonnet-5-5
 judgment and prose: claude-opus-5-5
 hardest tasks: claude-opus-5-5
-how explorer: claude-haiku-4-5
+how explorer: haiku
 how explainer: claude-opus-5-5
-why investigators: claude-haiku-4-5
+why investigators: haiku
 why synthesizer: claude-opus-5-5
 reflect tooling: claude-sonnet-5-5
 reflect judgment, divergent, synthesizer: claude-opus-5-5
 arena runners: claude-sonnet-5-5, claude-opus-5-5
 arena cross-judge pool: claude-opus-5-5, claude-sonnet-5-5
-swarm workers: claude-haiku-4-5
+swarm workers: haiku
 architect runners: claude-opus-5-5, claude-sonnet-5-5
 interrogate reviewers: claude-opus-5-5, claude-sonnet-5-5

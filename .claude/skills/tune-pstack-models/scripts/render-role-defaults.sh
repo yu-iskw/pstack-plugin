@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Render plugins/pstack/claude/pstack-role-defaults.txt from model-roster.json
+# Render plugins/pstack/claude/pstack-role-defaults*.txt from model-roster.json profiles
 
 set -euo pipefail
 
 SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 ROSTER="${SKILL_DIR}/references/model-roster.json"
 OUT_DIR="$(git -C "${SKILL_DIR}" rev-parse --show-toplevel 2>/dev/null)/plugins/pstack/claude"
-OUT_FILE="${OUT_DIR}/pstack-role-defaults.txt"
 
 if ! command -v jq >/dev/null 2>&1; then
 	echo "ERROR: jq is required." >&2
@@ -18,11 +17,30 @@ mkdir -p "${OUT_DIR}"
 pricing_as_of="$(jq -r '.pricingAsOf' "${ROSTER}")"
 pricing_source="$(jq -r '.pricingSource' "${ROSTER}")"
 
-{
-	echo "# pstack role defaults (Claude Code). Generated from tune-pstack-models."
-	echo "# pricingAsOf: ${pricing_as_of} — ${pricing_source}"
-	echo "# budget: large (high)"
-	jq -r '.roleDefaults | to_entries[] | if (.value | type) == "array" then "\(.key): \(.value | join(", "))" else "\(.key): \(.value)" end' "${ROSTER}"
-} >"${OUT_FILE}"
+render_profile() {
+	local profile_key="$1"
+	local out_name
+	out_name="$(jq -r --arg k "${profile_key}" '.profiles[$k].outputFile' "${ROSTER}")"
+	local profile_label
+	profile_label="$(jq -r --arg k "${profile_key}" '.profiles[$k].profile' "${ROSTER}")"
+	local header_budget
+	header_budget="$(jq -r --arg k "${profile_key}" '.profiles[$k].headerBudget' "${ROSTER}")"
+	local out_file="${OUT_DIR}/${out_name}"
 
-echo "Wrote ${OUT_FILE}"
+	{
+		echo "# pstack role defaults (Claude Code). Generated from tune-pstack-models."
+		echo "# pricingAsOf: ${pricing_as_of} — ${pricing_source}"
+		echo "# profile: ${profile_label}"
+		echo "# budget: ${header_budget}"
+		echo "# Fast roles use alias haiku (Claude Haiku 5.5 when available)."
+		jq -r --arg k "${profile_key}" \
+			'.profiles[$k].roleDefaults | to_entries[] | if (.value | type) == "array" then "\(.key): \(.value | join(", "))" else "\(.key): \(.value)" end' \
+			"${ROSTER}"
+	} >"${out_file}"
+
+	echo "Wrote ${out_file}"
+}
+
+while IFS= read -r profile_key; do
+	render_profile "${profile_key}"
+done < <(jq -r '.profiles | keys[]' "${ROSTER}")

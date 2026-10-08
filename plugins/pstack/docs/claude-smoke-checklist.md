@@ -10,8 +10,8 @@ Run after importing or syncing `plugins/pstack`, or before merging an upstream s
 
 ## Configuration
 
-1. Run `/setup-pstack` and complete the budget / model flow.
-2. Confirm `~/.claude/pstack-models.mdc` exists and lists role lines.
+1. Run `/setup-pstack` and complete the budget / model flow (`large` → balanced profile; `medium` or `small` → cost-efficient).
+2. Confirm `~/.claude/pstack-models.mdc` exists with `# profile` and `# budget` lines and role entries.
 
 ## Core workflows
 

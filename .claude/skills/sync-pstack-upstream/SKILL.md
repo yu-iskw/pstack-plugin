@@ -1,6 +1,6 @@
 ---
 name: sync-pstack-upstream
-description: Vendor-sync plugins/pstack from cursor/plugins main, apply Claude overlay patches, and verify manifests. Use when catching up with upstream pstack, refreshing UPSTREAM.json, or fixing patch drift after upstream changes.
+description: Vendor-sync plugins/pstack from cursor/plugins main and verify manifests. Use when catching up with upstream pstack or refreshing UPSTREAM.json.
 ---
 
 # Sync pstack upstream
@@ -10,8 +10,8 @@ Keep the Claude Code distribution of pstack aligned with [cursor/plugins/pstack]
 ## When to use
 
 - Upstream pstack released new skills, playbooks, or version bumps.
-- A patch under `patches/pstack/` fails to apply after upstream edits.
 - You need to record a new upstream commit in `plugins/pstack/UPSTREAM.json`.
+- After upstream changes, re-merge Claude-specific edits in `plugins/pstack/` (see workflow step 2).
 
 ## Prerequisites
 
@@ -30,16 +30,15 @@ From the repository root:
 
 Optional environment variables:
 
-| Variable | Default | Meaning |
-|----------|---------|---------|
-| `UPSTREAM_REPO` | `https://github.com/cursor/plugins.git` | Upstream git remote |
-| `UPSTREAM_REF` | `main` | Branch or tag |
-| `SKIP_PATCHES` | `false` | Set `true` while regenerating patches |
-| `CHECK_ONLY` | `false` | Set `true` (or pass `--check`) to fail if the tree would change |
+| Variable        | Default                                 | Meaning                                                         |
+| --------------- | --------------------------------------- | --------------------------------------------------------------- |
+| `UPSTREAM_REPO` | `https://github.com/cursor/plugins.git` | Upstream git remote                                             |
+| `UPSTREAM_REF`  | `main`                                  | Branch or tag                                                   |
+| `CHECK_ONLY`    | `false`                                 | Set `true` (or pass `--check`) to fail if the tree would change |
 
-### 2. Handle patch failures
+### 2. Re-merge Claude-specific changes
 
-If `git apply` fails, follow [patches/pstack/README.md](../../../patches/pstack/README.md): sync with `SKIP_PATCHES=true`, edit `plugins/pstack/`, export a new patch, then re-run the full sync.
+Rsync overwrites vendored paths. After sync, diff `plugins/pstack/` against the pre-sync commit and restore Claude Code adaptations (for example `~/.claude/pstack-models.mdc` paths, Agent tool wording, model fallbacks in skills, and `setup-pstack`). Owned paths under `plugins/pstack/claude/` are preserved automatically.
 
 ### 3. Align version metadata
 
@@ -59,12 +58,11 @@ Before opening a PR, run `./integration_tests/run.sh --verbose` or `make test-in
 
 ### 5. Commit
 
-Commit the vendored tree, `UPSTREAM.json`, and any version manifest updates. Do not edit synced skill bodies except via `patches/pstack/`.
+Commit the vendored tree, `UPSTREAM.json`, and any version manifest updates.
 
 ## Progressive disclosure
 
 - Owned vs synced paths and post-sync checklist: [references/upstream-sync.md](references/upstream-sync.md)
-- Patch policy: [patches/pstack/README.md](../../../patches/pstack/README.md)
 - Claude smoke tests: [plugins/pstack/docs/claude-smoke-checklist.md](../../../plugins/pstack/docs/claude-smoke-checklist.md)
 
 ## Related skills

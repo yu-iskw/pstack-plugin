@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Copyright 2026 yu-iskw
 #
-# Sync plugins/pstack from cursor/plugins (pstack/) and apply Claude overlay patches.
+# Sync plugins/pstack from cursor/plugins (pstack/). Claude-specific files are preserved (see owned paths below).
 
 set -euo pipefail
 
@@ -10,11 +10,9 @@ if ! REPO_ROOT="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel 2>/dev/null)"
 	REPO_ROOT="$(cd "${SCRIPT_DIR}/../../../.." && pwd)"
 fi
 PLUGIN_DIR="${REPO_ROOT}/plugins/pstack"
-PATCH_DIR="${REPO_ROOT}/patches/pstack"
 UPSTREAM_REPO="${UPSTREAM_REPO:-https://github.com/cursor/plugins.git}"
 UPSTREAM_REF="${UPSTREAM_REF:-main}"
 UPSTREAM_PATH="pstack"
-SKIP_PATCHES="${SKIP_PATCHES:-false}"
 CHECK_ONLY="${CHECK_ONLY:-false}"
 
 usage() {
@@ -23,7 +21,6 @@ Usage: sync-pstack-upstream.sh [--check]
 
   UPSTREAM_REPO   Git remote (default: https://github.com/cursor/plugins.git)
   UPSTREAM_REF    Branch or tag (default: main)
-  SKIP_PATCHES    If true, skip applying patches/pstack/*.patch
   CHECK_ONLY      Exit 1 if sync would change the working tree (for CI)
 
 Environment variables override defaults. Pass --check to set CHECK_ONLY=true.
@@ -135,25 +132,6 @@ jq -n \
 	'{repo: $repo, path: $path, ref: $ref, commit: $commit, version: $version, syncedAt: $syncedAt}' \
 	>"${PLUGIN_DIR}/UPSTREAM.json"
 
-if [[ ${SKIP_PATCHES} != true ]]; then
-	if [[ -d ${PATCH_DIR} ]]; then
-		shopt -s nullglob
-		patches=("${PATCH_DIR}"/*.patch)
-		shopt -u nullglob
-		if [[ ${#patches[@]} -gt 0 ]]; then
-			echo "Applying ${#patches[@]} patch(es) from ${PATCH_DIR}..."
-			for patch in "${patches[@]}"; do
-				echo "  -> $(basename "${patch}")"
-				if ! git -C "${REPO_ROOT}" apply -p0 "${patch}"; then
-					echo "ERROR: failed to apply ${patch}" >&2
-					echo "Refresh patches after upstream changes (see patches/pstack/README.md)." >&2
-					exit 1
-				fi
-			done
-		fi
-	fi
-fi
-
 if [[ -f ${PLUGIN_DIR}/README.claude-header.md ]]; then
 	{
 		cat "${PLUGIN_DIR}/README.claude-header.md"
@@ -177,10 +155,10 @@ if [[ -n ${upstream_version} ]]; then
 fi
 
 if [[ ${CHECK_ONLY} == true ]]; then
-	if ! git -C "${REPO_ROOT}" diff --quiet -- plugins/pstack patches/pstack; then
+	if ! git -C "${REPO_ROOT}" diff --quiet -- plugins/pstack; then
 		echo "CHECK: plugins/pstack differs from last commit after sync." >&2
 		git -C "${REPO_ROOT}" status --short plugins/pstack >&2 || true
 		exit 1
 	fi
-	echo "CHECK: plugins/pstack matches synced upstream + patches."
+	echo "CHECK: plugins/pstack matches last commit after sync."
 fi

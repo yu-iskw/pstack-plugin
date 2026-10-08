@@ -1,7 +1,7 @@
 {
   "pricingSource": "https://platform.claude.com/docs/en/about-claude/pricing",
   "pricingAsOf": "2026-10-08",
-  "notes": "USD per million tokens (base input / output). Update pricingAsOf and numbers when Anthropic changes the pricing page, then run scripts/render-role-defaults.sh.",
+  "notes": "USD per million tokens (base input / output). Fast roles use alias `haiku` (Claude Haiku 5.5 in Claude Code). Full slug: claude-haiku-5-5. Update pricingAsOf and numbers when Anthropic changes the pricing page, then run scripts/render-role-defaults.sh.",
   "models": [
     {
       "displayName": "Claude Opus 5.5",
@@ -20,39 +20,86 @@
       "claudeCodeAliases": ["sonnet"]
     },
     {
-      "displayName": "Claude Haiku 4.5",
-      "slug": "claude-haiku-4-5",
+      "displayName": "Claude Haiku 5.5",
+      "slug": "claude-haiku-5-5",
       "tier": "fast",
-      "inputUsdPerMTok": 1,
-      "outputUsdPerMTok": 5,
+      "inputUsdPerMTok": 0.1,
+      "outputUsdPerMTok": 0.5,
+      "pricingNote": "Base input/output for prompts ≤100k tokens; see pricing page for >100k tier",
       "claudeCodeAliases": ["haiku"]
     }
   ],
-  "roleDefaults": {
-    "feature, refactoring": "claude-sonnet-5-5",
-    "bug-fix": "claude-sonnet-5-5",
-    "perf-issue": "claude-sonnet-5-5",
-    "hillclimb": "claude-sonnet-5-5",
-    "judgment and prose": "claude-opus-5-5",
-    "hardest tasks": "claude-opus-5-5",
-    "how explorer": "claude-haiku-4-5",
-    "how explainer": "claude-opus-5-5",
-    "why investigators": "claude-haiku-4-5",
-    "why synthesizer": "claude-opus-5-5",
-    "reflect tooling": "claude-sonnet-5-5",
-    "reflect judgment, divergent, synthesizer": "claude-opus-5-5",
-    "arena runners": ["claude-sonnet-5-5", "claude-opus-5-5"],
-    "arena cross-judge pool": ["claude-opus-5-5", "claude-sonnet-5-5"],
-    "swarm workers": "claude-haiku-4-5",
-    "architect runners": ["claude-opus-5-5", "claude-sonnet-5-5"],
-    "interrogate reviewers": ["claude-opus-5-5", "claude-sonnet-5-5"]
+  "budgetProfile": {
+    "unlimited": "balanced",
+    "large": "balanced",
+    "medium": "costEfficient",
+    "small": "costEfficient"
   },
-  "skillFallbacks": {
-    "codeDelegate": "claude-sonnet-5-5",
-    "judgment": "claude-opus-5-5",
-    "highVolumeWorker": "claude-haiku-4-5",
-    "arenaRunnerA": "claude-sonnet-5-5",
-    "arenaRunnerB": "claude-opus-5-5"
+  "profiles": {
+    "balanced": {
+      "profile": "balanced",
+      "defaultBudget": "large",
+      "headerBudget": "large (high)",
+      "outputFile": "pstack-role-defaults.txt",
+      "roleDefaults": {
+        "feature, refactoring": "claude-sonnet-5-5",
+        "bug-fix": "claude-sonnet-5-5",
+        "perf-issue": "claude-sonnet-5-5",
+        "hillclimb": "claude-sonnet-5-5",
+        "judgment and prose": "claude-opus-5-5",
+        "hardest tasks": "claude-opus-5-5",
+        "how explorer": "haiku",
+        "how explainer": "claude-opus-5-5",
+        "why investigators": "haiku",
+        "why synthesizer": "claude-opus-5-5",
+        "reflect tooling": "claude-sonnet-5-5",
+        "reflect judgment, divergent, synthesizer": "claude-opus-5-5",
+        "arena runners": ["claude-sonnet-5-5", "claude-opus-5-5"],
+        "arena cross-judge pool": ["claude-opus-5-5", "claude-sonnet-5-5"],
+        "swarm workers": "haiku",
+        "architect runners": ["claude-opus-5-5", "claude-sonnet-5-5"],
+        "interrogate reviewers": ["claude-opus-5-5", "claude-sonnet-5-5"]
+      },
+      "skillFallbacks": {
+        "codeDelegate": "claude-sonnet-5-5",
+        "judgment": "claude-opus-5-5",
+        "highVolumeWorker": "haiku",
+        "arenaRunnerA": "claude-sonnet-5-5",
+        "arenaRunnerB": "claude-opus-5-5"
+      }
+    },
+    "costEfficient": {
+      "profile": "cost-efficient",
+      "defaultBudget": "medium",
+      "headerBudget": "medium (medium)",
+      "outputFile": "pstack-role-defaults.cost-efficient.txt",
+      "roleDefaults": {
+        "feature, refactoring": "haiku",
+        "bug-fix": "claude-sonnet-5-5",
+        "perf-issue": "claude-sonnet-5-5",
+        "hillclimb": "claude-sonnet-5-5",
+        "judgment and prose": "claude-sonnet-5-5",
+        "hardest tasks": "claude-sonnet-5-5",
+        "how explorer": "haiku",
+        "how explainer": "claude-sonnet-5-5",
+        "why investigators": "haiku",
+        "why synthesizer": "claude-sonnet-5-5",
+        "reflect tooling": "haiku",
+        "reflect judgment, divergent, synthesizer": "claude-sonnet-5-5",
+        "arena runners": ["claude-sonnet-5-5", "haiku"],
+        "arena cross-judge pool": ["claude-sonnet-5-5", "haiku"],
+        "swarm workers": "haiku",
+        "architect runners": ["claude-sonnet-5-5", "haiku"],
+        "interrogate reviewers": ["claude-sonnet-5-5", "haiku"]
+      },
+      "skillFallbacks": {
+        "codeDelegate": "claude-sonnet-5-5",
+        "judgment": "claude-sonnet-5-5",
+        "highVolumeWorker": "haiku",
+        "arenaRunnerA": "claude-sonnet-5-5",
+        "arenaRunnerB": "haiku"
+      }
+    }
   },
   "budgetEffort": {
     "unlimited": { "opus": "max", "sonnet": "high", "haiku": "high" },

@@ -82,7 +82,7 @@ Launch all matching investigators in a single message so they run concurrently. 
 Subagent config (each):
 
 - `subagent_type`: `generalPurpose`
-- `model`: the `why investigators` line, default `claude-sonnet-5-5`
+- `model`: the `why investigators` line, default `haiku`
 - `readonly`: `false` (agent mode). **Do not use readonly/Ask mode.** It strips MCP access, which disables MCP-backed investigators entirely. Investigators still shouldn't write anything.
 
 Each investigator gets:
