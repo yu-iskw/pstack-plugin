@@ -101,6 +101,23 @@ Important constraints:
 - Non-loopback remote MCP URLs must use HTTPS.
 - Secrets must not be embedded in MCP headers or environment configuration.
 
+## pstack plugin (Claude Code)
+
+This repository ships [pstack](https://github.com/cursor/plugins/tree/main/pstack) under `plugins/pstack` for Claude Code. Content is vendored from `cursor/plugins` on `main`, with Claude-specific overlay patches in `patches/pstack/`. Upstream revision is recorded in `plugins/pstack/UPSTREAM.json`.
+
+**Install:** add this repo as a Claude Code marketplace (`.claude-plugin/marketplace.json`), install `pstack`, then run `/setup-pstack` and use `/poteto-mode` for rigorous work. For Cursor, use the official `pstack` plugin from the Cursor marketplace instead.
+
+**Catch up with upstream:**
+
+```bash
+./.claude/skills/sync-pstack-upstream/scripts/sync-pstack-upstream.sh
+./integration_tests/run.sh --manifest-only
+```
+
+Use the [sync-pstack-upstream](.claude/skills/sync-pstack-upstream/SKILL.md) skill (or `/sync-pstack-upstream` when loaded) for the full catch-up workflow. See [patches/pstack/README.md](patches/pstack/README.md) before editing synced files.
+
+Manual smoke checklist: [plugins/pstack/docs/claude-smoke-checklist.md](plugins/pstack/docs/claude-smoke-checklist.md).
+
 ## Claude Marketplace
 
 Agent Plugins does not define a universal marketplace protocol. `.claude-plugin/marketplace.json` remains the Claude Code distribution catalog, while each plugin's root files form the portable package consumed by compatible clients.

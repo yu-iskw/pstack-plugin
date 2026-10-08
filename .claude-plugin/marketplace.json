@@ -8,6 +8,17 @@
   },
   "plugins": [
     {
+      "name": "pstack",
+      "description": "Rigorous agent workflows you can parallelize with confidence (Claude Code distribution; synced from cursor/plugins).",
+      "source": "./plugins/pstack",
+      "version": "0.15.15",
+      "author": {
+        "name": "Lauren Tan"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/yu-iskw/pstack-plugin"
+    },
+    {
       "name": "hello-world",
       "description": "Comprehensive sample plugin demonstrating all Claude Code extension points",
       "source": "./plugins/hello-world",
